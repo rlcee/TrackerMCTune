@@ -1,0 +1,13 @@
+#include "fcl/prototype.fcl"
+#include "fcl/epilog_Fe55_fermi.fcl"
+
+physics.producers.generate.inputfile : "fcl/generate_120cmFe55Center.txt"
+
+services.TFileService.fileName: "dig.Fe55_adcgain_fermi.root"
+outputs.Output.fileName: "dig.Fe55_adcgain_fermi.art"
+
+services.ProditionsService.strawDrift.wireVoltage : 1200
+services.ProditionsService.strawPhysics.gasGain : 0.8548e4
+
+services.ProditionsService.strawElectronics.discriminatorThreshold : []
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 5

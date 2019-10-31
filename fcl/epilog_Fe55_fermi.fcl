@@ -1,0 +1,9 @@
+#include "fcl/epilog_Fe55.fcl"
+
+services.ProditionsService.strawElectronics.ADCPoles : [ 160., 6., 1.45 ]
+services.ProditionsService.strawElectronics.preampToAdc2Poles : [ 1.45 ]
+services.ProditionsService.strawElectronics.defaultAdcdVdI : 6.08e5
+services.ProditionsService.strawElectronics.adcAnalogNoise : 0.9
+
+services.ProditionsService.strawElectronics.ADCLSB : 1.46484
+services.ProditionsService.strawElectronics.maxADC : 1024

@@ -1,0 +1,3 @@
+#include "fcl/epilog.fcl"
+
+services.ProditionsService.strawElectronics.defaultThresholddVdI : 6.63e6

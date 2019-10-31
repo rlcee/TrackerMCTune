@@ -1,0 +1,45 @@
+#!/usr/bin/env python
+import ROOT
+import numpy as np
+
+ROOT.gSystem.Load("event/Dict.so")
+
+def calc_rms(fn,straws,is_fermilab):
+  #f = ROOT.TFile("~/mu2e/newruns/software/%s" % fn)
+  f = ROOT.TFile("%s" % fn)
+  t = f.Get("T")
+  pedestals = {straw: [] for straw in straws}
+  if is_fermilab:
+    for i in range(t.GetEntries()):
+      t.GetEntry(i)
+      if t.channel in straws:
+        if t.peak-t.pedestal > 30:
+          pedestals[t.channel].append(t.samples[2]-t.samples[1])
+  else:
+    for i in range(t.GetEntries()):
+      t.GetEntry(i)
+      for j in range(t.events.straws.size()):
+        for straw in straws:
+          if t.events.straws[j].channel == straw:
+            pedestals[straw].append(t.events.straws[j].samples[2]-t.events.straws[j].samples[1])
+  return pedestals
+
+import sys
+
+if len(sys.argv) < 3:
+  print "Usage: python bin/pedestal_data.py <input filename> <straw number>"
+  sys.exit()
+
+is_fermilab = False
+if len(sys.argv) > 3:
+  is_fermilab = True
+
+fn = sys.argv[1]
+straw = int(sys.argv[2])
+ped = calc_rms(fn,[straw],is_fermilab)[straw]
+print "Number of pedestals:",len(ped)
+if is_fermilab:
+  print "Pedestal RMS in mV:",np.std(ped)/np.sqrt(2)/1024.*1500
+else:
+  print "Pedestal RMS in mV:",np.std(ped)/np.sqrt(2)/4096.*1500
+#print "(std of distribution:",np.std(ped)/4096.*1500,")"
