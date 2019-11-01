@@ -1,0 +1,99 @@
+#!/usr/bin/env python
+import ROOT
+import numpy as np
+import sys
+import array
+
+if len(sys.argv) < 3:
+  print "usage: bin/fe55saturation_sim <input filename list> <output filename>"
+  sys.exit()
+
+inputcommand = sys.argv[0]
+for i in range(1,len(sys.argv)):
+  inputcommand += " " + sys.argv[i] 
+
+fn_gains = {}
+
+fin = open(sys.argv[1])
+for line in fin:
+  fn_gains[line.split()[0]] = float(line.split()[1].rstrip())
+
+hs = []
+peak1s = []
+peak2s = []
+peak1errs = []
+peak2errs = []
+gains = []
+for fn, gain in sorted(fn_gains.iteritems(), key=lambda (k,v): (v,k)):
+  print "%s: %s" % (fn, gain)
+  gains.append(gain)
+
+  pmps = []
+  f = ROOT.TFile(fn)
+  t = f.Get("makeSD/sddiag")
+  for i in range(t.GetEntries()):
+    t.GetEntry(i)
+    if t.panel == 1 and t.straw < 10:
+      adcs = [t.adc[j] for j in range(15)]
+      pmps.append(np.max(adcs)-np.mean(adcs[:2]))
+  f.Close()
+  
+  hs.append(ROOT.TH1F("h_%s" % fn,"h_%s" % fn,100,0,np.mean(pmps)*1.5))
+  for i in range(len(pmps)):
+    hs[-1].Fill(pmps[i])
+  
+  c = ROOT.TCanvas("c_%s" % fn,"c_%s" % fn,600,800)
+  hs[-1].Draw()
+  f1 = ROOT.TF1("f1","gaus(0)+gaus(3)+pol1(6)")
+  f1.SetParameter(0,hs[-1].GetMaximum())
+  f1.SetParameter(1,hs[-1].GetBinCenter(hs[-1].GetMaximumBin()))
+  f1.SetParameter(2,hs[-1].GetRMS())
+  f1.SetParameter(3,hs[-1].GetMaximum()/2.)
+  f1.SetParameter(4,hs[-1].GetBinCenter(hs[-1].GetMaximumBin()/2))
+  f1.SetParameter(5,hs[-1].GetRMS())
+  test = 0
+  while True:
+    test2 = raw_input("Min val: (%f)" % test)
+    if len(test2) > 0:
+      test = float(test2)
+    min_fit = test
+    hs[-1].Fit("f1","","",min_fit,np.mean(pmps)*1.5)
+    c.Update()
+    test3 = raw_input("Redo?")
+    if len(test3) == 0:
+      break
+    for i in range(8):
+      val = raw_input("Parameter %d: (%f)" % (i,f1.GetParameter(i)))
+      if len(val) > 0:
+        f1.SetParameter(i,float(val))
+  print "DONE"
+  peak1s.append(f1.GetParameter(1))
+  peak2s.append(f1.GetParameter(4))
+  peak1errs.append(f1.GetParError(1))
+  peak2errs.append(f1.GetParError(4))
+
+fout = ROOT.TFile(sys.argv[2],"RECREATE")
+
+peak1 = array.array('d',[0])
+peak2 = array.array('d',[0])
+peak1err = array.array('d',[0])
+peak2err = array.array('d',[0])
+gain = array.array('d',[0])
+
+tout = ROOT.TTree("fe55saturationfit","fe55saturationfit")
+tout.Branch("peak1",peak1,"peak1/D")
+tout.Branch("peak2",peak2,"peak2/D")
+tout.Branch("peak1err",peak1err,"peak1err/D")
+tout.Branch("peak2err",peak2err,"peak2err/D")
+tout.Branch("gain",gain,"gain/D")
+for i in range(len(gains)):
+  peak1[0] = peak1s[i]
+  peak2[0] = peak2s[i]
+  peak1err[0] = peak1errs[i]
+  peak2err[0] = peak2errs[i]
+  gain[0] = gains[i]
+  tout.Fill()
+tout.Write()
+
+tl = ROOT.TObjString(inputcommand)
+fout.WriteObject(tl,"command")

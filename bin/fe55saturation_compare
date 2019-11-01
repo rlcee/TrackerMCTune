@@ -1,0 +1,88 @@
+#!/usr/bin/env python
+import numpy as np
+import ROOT
+import sys
+
+if len(sys.argv) < 3:
+  print "Usage: bin/fe55saturation_compare <data file> <sim file>"
+
+f = ROOT.TFile(sys.argv[2])
+t = f.Get("fe55saturationfit")
+gains = []
+peak1s = []
+peak2s = []
+peak1errs = []
+peak2errs = []
+for i in range(t.GetEntries()):
+  t.GetEntry(i)
+  gains.append(t.gain)
+  peak1s.append(t.peak1)
+  peak2s.append(t.peak2)
+  peak1errs.append(t.peak1err)
+  peak2errs.append(t.peak2err)
+
+x = np.array(gains)*10**4
+y1 = np.array(peak1s)
+y2 = np.array(peak2s)
+y1err = np.array(peak1errs)
+y2err = np.array(peak2errs)
+
+y1 *= 1500/1024.
+y2 *= 1500/1024.
+y1err *= 1500/1024.
+y2err *= 1500/1024.
+
+f = ROOT.TFile(sys.argv[1])
+t = f.Get("fe55saturationfit")
+gains = []
+peak1s = []
+peak2s = []
+peak1errs = []
+peak2errs = []
+for i in range(t.GetEntries()):
+  t.GetEntry(i)
+  gains.append(t.gain)
+  peak1s.append(t.peak1)
+  peak2s.append(t.peak2)
+  peak1errs.append(t.peak1err)
+  peak2errs.append(t.peak2err)
+
+xdata = np.array(gains)*10**4
+y1data = np.array(peak1s)
+y2data = np.array(peak2s)
+y1errdata = np.array(peak1errs)
+y2errdata = np.array(peak2errs)
+
+y1data *= 1500/1024.
+y2data *= 1500/1024.
+y1errdata *= 1500/1024.
+y2errdata *= 1500/1024.
+
+zdata = np.zeros(len(xdata))
+z = np.zeros(len(x))
+
+c = ROOT.TCanvas("c1","c1",800,600)
+gd = ROOT.TGraphErrors(len(xdata),xdata,y1data,zdata,y1errdata)
+gd.SetMarkerStyle(21)
+gd.SetMarkerColor(ROOT.kRed)
+gd.Draw("AP")
+gd.GetXaxis().SetTitle("Gain")
+gd.GetYaxis().SetTitle("5.9 keV peak PMP (adc counts)")
+
+gs = ROOT.TGraphErrors(len(x),x,y1,z,y1err)
+gs.SetMarkerColor(ROOT.kBlue)
+gs.Draw("LP")
+
+c2 = ROOT.TCanvas("c2","c2",800,600)
+gd2 = ROOT.TGraphErrors(len(xdata),xdata,y2data,zdata,y2errdata)
+gd2.SetMarkerStyle(21)
+gd2.SetMarkerColor(ROOT.kRed)
+gd2.Draw("AP")
+gd2.GetXaxis().SetTitle("Gain")
+gd2.GetYaxis().SetTitle("2.9 keV peak PMP (adc counts)")
+
+gs2 = ROOT.TGraphErrors(len(x),x,y2,z,y2err)
+gs2.SetMarkerColor(ROOT.kBlue)
+gs2.Draw("LP")
+raw_input()
+

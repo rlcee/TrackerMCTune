@@ -1,3 +1,4 @@
 #include "fcl/epilog.fcl"
 
 services.ProditionsService.strawElectronics.defaultThresholddVdI : 6.63e6
+physics.producers.g4run.debug.stepLimitKillerVerbose : false

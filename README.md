@@ -38,3 +38,16 @@ To run the included fcl, you will need to source env.sh so that Offline knows wh
    - in fcl/epilog_Fe55_<lbl/fermi>.fcl, adjust until you get agreement values of
      * strawElectronics.defaultAdcdVdI
      * strawElectronics.adcAnalogNoise/strawNoise
+3. The preamps should be the same between both setups, so the threshold gain is the same
+   - bin/fe55threshold_data
+   - mu2e -c fcl/Fe55_thresholdgain_<12/16/20/24>.fcl
+   - bin/fe55threshold_sim
+   - compare with bin/fe55threshold_compare, in fcl/epilog_Fe55.fcl adjust values of
+     * strawElectronics.defaultThresholddVdI
+     * strawElectronics.thresholdAnalogNoise/strawNoise
+4. Saturation effects also are the same between setups. Here we have data from Fermilab setup
+   - bin/fe55saturation_data
+   - mu2e -c fcl/fermi_Fe55_saturation_<1/2/4/6/8/10/12/14>.fcl
+   - bin/fe55saturation_sim
+   - bin/fe55saturation_compare, in fcl/epilog.fcl adjust value of
+     * strawElectronics.saturationVoltage

@@ -1,0 +1,13 @@
+#include "fcl/prototype.fcl"
+#include "fcl/epilog_Fe55_lbl.fcl"
+
+physics.producers.generate.inputfile : "fcl/generate_prototypeFe55Center.txt"
+
+services.TFileService.fileName: "dig.Fe55_thresholdgain_16.root"
+outputs.Output.fileName: "dig.Fe55_thresholdgain_16.art"
+
+services.ProditionsService.strawDrift.wireVoltage : 1200
+services.ProditionsService.strawPhysics.gasGain : 0.8548e4
+
+services.ProditionsService.strawElectronics.discriminatorThreshold : []
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 16.0
