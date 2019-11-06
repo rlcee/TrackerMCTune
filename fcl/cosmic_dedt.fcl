@@ -1,0 +1,13 @@
+#include "fcl/prototype.fcl"
+#include "fcl/epilog_cosmic_fermi.fcl"
+
+physics.producers.generate.inputfile : "fcl/generate_120cmMuonsCenter.txt"
+
+services.TFileService.fileName: "dig.cosmic_dedt.root"
+outputs.Output.fileName: "dig.cosmic_dedt.art"
+
+services.ProditionsService.strawDrift.wireVoltage : 1475
+services.ProditionsService.strawPhysics.gasGain : 1.11e5
+
+services.ProditionsService.strawElectronics.discriminatorThreshold : []
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 12.0

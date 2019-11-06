@@ -1,0 +1,110 @@
+#!/usr/bin/env python
+import ROOT
+import numpy as np
+import sys
+import array
+
+if len(sys.argv) < 3:
+  print "usage: bin/dedt_sim <input filename> <output filename> <min straw> <max straw>"
+  sys.exit()
+
+inputcommand = sys.argv[0]
+for i in range(1,len(sys.argv)):
+  inputcommand += " " + sys.argv[i] 
+
+
+
+f = ROOT.TFile(sys.argv[1])
+t = f.Get("makeSD/sddiag")
+
+min_straw = int(sys.argv[3])
+max_straw = int(sys.argv[4])
+
+last_ewm = 0
+last_event = []
+last_event_channels = []
+
+pmps = []
+dts = []
+straw0s = []
+straw1s = []
+
+h1 = ROOT.TH1F("h1","h1",100,0,1024)
+h2 = ROOT.TH2F("h2","h2",25,-50,50,100,0,1024)
+for i in range(t.GetEntries()):
+  t.GetEntry(i)
+  if t.ewmoffset == last_ewm:
+    if t.panel == 1:
+      last_event.append(i)
+      last_event_channels.append(t.straw)
+  else:
+    for straw in range(min_straw,max_straw+1):
+      if straw in last_event_channels and (straw-1 in last_event_channels or straw+1 in last_event_channels):
+        istraw0 = last_event[last_event_channels.index(straw)]
+        if (straw-1 in last_event_channels and straw+1 in last_event_channels):
+          print "BOTH"
+        if straw-1 in last_event_channels:
+          istraw1 = last_event[last_event_channels.index(straw-1)]
+        else:
+          istraw1 = last_event[last_event_channels.index(straw+1)]
+        t.GetEntry(istraw0)
+        tdc0 = t.tdccal
+        adc0 = [t.adc[k] for k in range(15)]
+        pmp0 = np.max(adc0)-np.mean(adc0[:2])
+        straw0 = t.straw
+        t.GetEntry(istraw1)
+        tdc1 = t.tdccal
+        adc1 = [t.adc[k] for k in range(15)]
+        pmp1 = np.max(adc1)-np.mean(adc1[:2])
+        straw1 = t.straw
+#        print straw,last_event_channels,(tdc1-tdc0)*0.03125,pmp0,pmp1,pmp0+pmp1,np.max(adc0),np.max(adc1)
+        h1.Fill(pmp0)
+        h1.Fill(pmp1)
+        h2.Fill((tdc1-tdc0)*0.03125,pmp0)
+
+        dts.append((tdc1-tdc0)*0.03125)
+        pmps.append(pmp0)
+        straw0s.append(straw0)
+        straw1s.append(straw1)
+
+        dts.append(-1*(tdc1-tdc0)*0.03125)
+        pmps.append(pmp1)
+        straw0s.append(straw1)
+        straw1s.append(straw0)
+
+
+
+    last_event_channels = [t.straw]
+    last_event = [i]
+    last_ewm = t.ewmoffset
+
+
+fout = ROOT.TFile(sys.argv[2],"RECREATE")
+pmp = array.array('d',[0])
+dt = array.array('d',[0])
+straw0 = array.array('i',[0])
+straw1 = array.array('i',[0])
+tout = ROOT.TTree("dedt","dedt")
+tout.Branch("pmp",pmp,"pmp/D")
+tout.Branch("dt",dt,"dt/D")
+tout.Branch("straw0",straw0,"straw0/D")
+tout.Branch("straw1",straw1,"straw1/D")
+for i in range(len(pmps)):
+  pmp[0] = pmps[i]
+  dt[0] = dts[i]
+  straw0[0] = straw0s[i]
+  straw1[0] = straw1s[i]
+  tout.Fill()
+tout.Write()
+
+tl = ROOT.TObjString(inputcommand)
+fout.WriteObject(tl,"command")
+
+
+#h1.Draw()
+#raw_input()
+hp = h2.ProfileX("hp")
+hp.Draw()
+raw_input()
+h2.Draw()
+raw_input()

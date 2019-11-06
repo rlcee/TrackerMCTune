@@ -1,0 +1,134 @@
+#!/usr/bin/env python
+import ROOT
+import numpy as np
+import sys
+import array
+
+if len(sys.argv) < 3:
+  print "usage: bin/dedt_data <input filename> <output filename>"
+  sys.exit()
+
+inputcommand = sys.argv[0]
+for i in range(1,len(sys.argv)):
+  inputcommand += " " + sys.argv[i] 
+
+fn = sys.argv[1]
+
+f = ROOT.TFile(fn);
+t = f.Get("T")
+
+nstraws = 96
+cosmic_partners = [0 for i in range(96)]
+dts = [[] for i in range(96)]
+pmps = [[] for i in range(96)]
+pairs = [[] for i in range(96)]
+
+
+ientry = 0
+ilimit = 0
+while ientry < t.GetEntries():
+  if ientry > ilimit:
+    print ientry,t.GetEntries()
+    ilimit += 10000
+  if ientry > 1000000:
+    break
+  t.GetEntry(ientry)
+  entry_list = [ientry]
+  while ientry < t.GetEntries():
+    ientry += 1
+    t.GetEntry(ientry)
+    if t.dT < 65:
+      if t.channel != 44:
+        entry_list.append(ientry)
+    else:
+      break
+
+  if len(entry_list) > 2:
+    continue
+
+  ntrigs = len(entry_list)
+  failed = False
+  channels = []
+  this_pmps = []
+  this_times = []
+  for j in range(len(entry_list)):
+    t.GetEntry(entry_list[j])
+    if t.peak-t.pedestal < 30:
+      failed = True
+      break
+    channels.append(t.channel)
+    this_pmps.append(t.peak-t.pedestal)
+    this_times.append(t.dT)
+  if len(channels) == 2 and np.abs(channels[0]-channels[1]) > 1:
+    failed = True
+  if len(channels) != 2 or len(entry_list) != 2:
+    failed = True
+
+  if failed:
+    continue
+
+  pmps[channels[0]].append(this_pmps[0])
+  pmps[channels[1]].append(this_pmps[1])
+  dts[channels[0]].append(this_times[1])
+  dts[channels[1]].append(-this_times[1])
+  pairs[channels[0]].append(channels[1])
+  pairs[channels[1]].append(channels[0])
+
+allpmps = []
+alldts = []
+straw0s = []
+straw1s = []
+h2 = ROOT.TH2F("","",100,-100,100,100,0,1000)
+for j in range(96):
+  if len(dts[j]) > 0:
+    print j,np.median(pmps[j]),np.max(pmps[j])
+    h = ROOT.TH1F("","",100,-100,100)
+    maxc = 0
+    maxi = 1
+    for k in range(len(dts[j])):
+      h.Fill(dts[j][k])
+    for k in range(h.GetNbinsX()):
+      integral = h.Integral(k,k+25)
+      if integral > maxc:
+        maxc = integral
+        maxi = k
+    offset = h.GetBinCenter(maxi)+25
+    print offset
+#    h.Draw()
+#    raw_input()
+    if j >= 4 and j <= 12:
+      for k in range(len(pmps[j])):
+        allpmps.append(pmps[j][k])
+        alldts.append(dts[j][k]-offset)
+        straw0s.append(j)
+        straw1s.append(pairs[j][k])
+        h2.Fill(dts[j][k]-offset,pmps[j][k])
+
+
+fout = ROOT.TFile(sys.argv[2],"RECREATE")
+pmp = array.array('d',[0])
+dt = array.array('d',[0])
+straw0 = array.array('i',[0])
+straw1 = array.array('i',[0])
+tout = ROOT.TTree("dedt","dedt")
+tout.Branch("pmp",pmp,"pmp/D")
+tout.Branch("dt",dt,"dt/D")
+tout.Branch("straw0",straw0,"straw0/D")
+tout.Branch("straw1",straw1,"straw1/D")
+for i in range(len(allpmps)):
+  pmp[0] = allpmps[i]
+  dt[0] = alldts[i]
+  straw0[0] = straw0s[i]
+  straw1[0] = straw1s[i]
+  tout.Fill()
+tout.Write()
+
+tl = ROOT.TObjString(inputcommand)
+fout.WriteObject(tl,"command")
+
+h2.Draw()
+raw_input()
+h2p = h2.ProfileX("h2p")
+h2p.Draw()
+raw_input()
+

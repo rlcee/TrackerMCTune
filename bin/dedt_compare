@@ -1,0 +1,40 @@
+#!/usr/bin/env python
+import ROOT
+import numpy as np
+import sys
+import array
+
+if len(sys.argv) < 3:
+  print "usage: bin/dedt_compare <data filename> <sim filename>"
+  sys.exit()
+
+inputcommand = sys.argv[0]
+for i in range(1,len(sys.argv)):
+  inputcommand += " " + sys.argv[i] 
+
+fd = ROOT.TFile(sys.argv[1])
+td = fd.Get("dedt")
+fs = ROOT.TFile(sys.argv[2])
+ts = fs.Get("dedt")
+
+hd = ROOT.TH2F("hd","hd",100,-100,100,100,0,1000)
+hs = ROOT.TH2F("hs","hs",100,-100,100,100,0,1000)
+
+td.Project("hd","pmp*1500/1024.:dt")
+ts.Project("hs","pmp*1500/1024.:dt")
+
+hdp = hd.ProfileX("hdp")
+hsp = hs.ProfileX("hsp")
+
+l = ROOT.TLegend(0.65,0.65,0.8,0.8)
+
+hdp.Draw()
+hdp.GetXaxis().SetTitle("#Delta t between channels (ns)")
+hdp.GetYaxis().SetTitle("Peak minus pedestal (mV)")
+hsp.SetLineColor(ROOT.kRed)
+hsp.Draw("same")
+
+l.AddEntry(hdp,"Data","lp")
+l.AddEntry(hsp,"Sim","lp")
+l.Draw()
+raw_input()

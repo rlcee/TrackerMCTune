@@ -1,0 +1,13 @@
+#include "fcl/prototype.fcl"
+#include "fcl/epilog_cosmic_lbl.fcl"
+
+physics.producers.generate.inputfile : "fcl/generate_prototypeMuonsCenter.txt"
+
+services.TFileService.fileName: "dig.cosmic_efficiency.root"
+outputs.Output.fileName: "dig.cosmic_efficiency.art"
+
+services.ProditionsService.strawDrift.wireVoltage : 1425
+services.ProditionsService.strawPhysics.gasGain : 7.0e4
+
+services.ProditionsService.strawElectronics.discriminatorThreshold : []
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 12.0

@@ -29,7 +29,7 @@ draw = False
 hs = []
 for fn, thresh in sorted(fn_peds.iteritems(), key=lambda (k,v): (v,k)):
   print "%s: %s" % (fn, thresh)
-  hs.append(ROOT.TH1F("h_%s" % fn,"h_%s" % fn,100,125,525))
+  hs.append(ROOT.TH1F("h_%s" % fn,"h_%s" % fn,50,125,525))
   f = ROOT.TFile(fn)
   t = f.Get("makeSD/sddiag")
   for i in range(t.GetEntries()):
@@ -43,8 +43,14 @@ for fn, thresh in sorted(fn_peds.iteritems(), key=lambda (k,v): (v,k)):
     peak = np.max(adc)
     ped = np.mean(adc[:3])
     hs[-1].Fill((peak-ped))
+#  hs[-1].Draw()
+#  raw_input()
   hs[-1].SetDirectory(0)
   f.Close()
+
+
+for i in range(2,len(hs)):
+  hs[i].Scale(2)
 
 import scipy.stats
 from scipy.optimize import curve_fit
@@ -71,7 +77,7 @@ for i in range(len(hs)):
   
     popt, pcov = curve_fit(fcn,x,y,p0=[200,10])
     yfit = scipy.stats.norm(loc=popt[0],scale=popt[1]).cdf(x)
-    hfit = ROOT.TH1F("","",100,125,525)
+    hfit = ROOT.TH1F("","",50,125,525)
     for j in range(hfit.GetNbinsX()):
       hfit.SetBinContent(j+1,yfit[j])
   

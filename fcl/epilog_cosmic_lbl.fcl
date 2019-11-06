@@ -1,0 +1,6 @@
+#include "fcl/epilog_cosmic.fcl"
+
+services.ProditionsService.strawElectronics.ADCPoles : [ 160., 6., 3.33 ]
+services.ProditionsService.strawElectronics.preampToAdc2Poles : [ 3.33 ]
+services.ProditionsService.strawElectronics.defaultAdcdVdI : 3.35e6
+services.ProditionsService.strawElectronics.adcAnalogNoise : 4.6

@@ -1,0 +1,11 @@
+#include "fcl/epilog_cosmic.fcl"
+
+services.ProditionsService.strawElectronics.ADCPoles : [ 160., 6., 1.45 ]
+services.ProditionsService.strawElectronics.preampToAdc2Poles : [ 1.45 ]
+# to get cosmic dVdI, we take the FL/LBL ratio for Fe55 dVdI
+# and multiply by LBL cosmic dVdI so: 6.08e5/1.78e6 x 3.35e6
+services.ProditionsService.strawElectronics.defaultAdcdVdI : 1.144e6
+services.ProditionsService.strawElectronics.adcAnalogNoise : 0.9
+
+services.ProditionsService.strawElectronics.ADCLSB : 1.46484
+services.ProditionsService.strawElectronics.maxADC : 1024
