@@ -11,3 +11,5 @@ services.ProditionsService.strawPhysics.gasGain : 1.0e4
 
 services.ProditionsService.strawElectronics.discriminatorThreshold : []
 services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 5
+
+source.maxEvents: 10000

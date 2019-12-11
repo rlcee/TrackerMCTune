@@ -3,13 +3,13 @@
 
 physics.producers.generate.inputfile : "fcl/generate_prototypeFe55Center.txt"
 
-services.TFileService.fileName: "dig.Fe55_adcgain_lbl.root"
-outputs.Output.fileName: "dig.Fe55_adcgain_lbl.art"
+services.TFileService.fileName: "dig.Fe55_thresholdgain_12.root"
+outputs.Output.fileName: "dig.Fe55_thresholdgain_12.art"
 
 services.ProditionsService.strawDrift.wireVoltage : 1200
 services.ProditionsService.strawPhysics.gasGain : 0.8548e4
 
 services.ProditionsService.strawElectronics.discriminatorThreshold : []
-services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 5
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 12.0
 
-source.maxEvents: 50000
+source.maxEvents: 500000

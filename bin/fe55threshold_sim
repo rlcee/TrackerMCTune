@@ -49,8 +49,8 @@ for fn, thresh in sorted(fn_peds.iteritems(), key=lambda (k,v): (v,k)):
   f.Close()
 
 
-for i in range(2,len(hs)):
-  hs[i].Scale(2)
+#for i in range(2,len(hs)):
+#  hs[i].Scale(2)
 
 import scipy.stats
 from scipy.optimize import curve_fit

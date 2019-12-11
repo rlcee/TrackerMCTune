@@ -121,19 +121,22 @@ int main(int argc, char** argv)
   std::cout << "Mean: " << f1->GetParameter(0) << " +- " << f1->GetParError(0) << std::endl;
   std::cout << "Sigma: " << f1->GetParameter(1) << " +- " << f1->GetParError(1) << std::endl;
 
+  TF1 *f2 = new TF1("f2","[2]*exp(-0.5*((x-[0])/[1])**2)",-2,2);
   TH1F *h2 = new TH1F("","",300,-2,2);
   for (int i=0;i<dts.size();i++)
     h2->Fill(dts[i]-offset);
-  f1->SetParameter(0,0);
-  f1->SetParameter(2,h2->GetMaximum());
-  f1->SetParameter(1,h2->GetRMS());
-  h2->Fit(f1,"LQN0","",-1,1);
+  f2->SetParameter(0,0);
+  f2->SetParameter(2,h2->GetMaximum());
+  f2->SetParameter(1,h2->GetRMS());
+  h2->Fit(f2,"LN","",-1,1);
 
-  offset += f1->GetParameter(0);
-  f1->SetParameter(0,0);
+  std::cout << h2->GetMaximum() << " " << h2->GetRMS() << std::endl;
 
-  std::cout << "Mean: " << offset << " +- " << f1->GetParError(0) << std::endl;
-  std::cout << "Sigma: " << f1->GetParameter(1) << " +- " << f1->GetParError(1) << std::endl;
+  offset += f2->GetParameter(0);
+  f2->SetParameter(0,0);
+
+  std::cout << "Mean: " << offset << " +- " << f2->GetParError(0) << std::endl;
+  std::cout << "Sigma: " << f2->GetParameter(1) << " +- " << f2->GetParError(1) << std::endl;
 
   
   TH1F *h3 = new TH1F("","",75,-2,2);
@@ -141,12 +144,16 @@ int main(int argc, char** argv)
     h3->Fill(dts[i]-offset);
 
   h3->Draw();
-  f1->SetParameter(0,0);
-  f1->SetParameter(2,f1->GetParameter(2)*300/75.);
+//  h->Draw("same");
+//  h2->Draw("same");
+
+
+  f2->SetParameter(0,0);
+  f2->SetParameter(2,f2->GetParameter(2)*300/75.);
   //f1->SetParameter(2,h3->GetMaximum());
   //f1->SetParameter(1,h3->GetRMS());
-  f1->SetRange(-1,1);
-  f1->Draw("same");
+  f2->SetRange(-1,1);
+  f2->Draw("same");
   
   TFile *fout = new TFile(outname.c_str(),"RECREATE");
   TTree *tout = new TTree("longitudinal","longitudinal");
@@ -167,10 +174,10 @@ int main(int argc, char** argv)
   tresults->Branch("sigmaerr",&t_sigmaerr,"sigmaerr/D");
   tresults->Branch("scale",&t_scale,"scale/D");
   t_mean = offset;
-  t_sigma = f1->GetParameter(1);
-  t_meanerr = f1->GetParError(0);
-  t_sigmaerr = f1->GetParError(1);
-  t_scale = f1->GetParameter(2);
+  t_sigma = f2->GetParameter(1);
+  t_meanerr = f2->GetParError(0);
+  t_sigmaerr = f2->GetParError(1);
+  t_scale = f2->GetParameter(2);
   tresults->Fill();
   tresults->Write();
 

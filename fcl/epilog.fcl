@@ -19,7 +19,16 @@ services.ProditionsService.strawElectronics.currentNormalizations : [1.0, 0.9793
 services.ProditionsService.strawElectronics.saturationVoltage : 200.
 
 services.ProditionsService.strawElectronics.strawNoise : 0
-services.ProditionsService.strawElectronics.thresholdAnalogNoise : 0
+#services.ProditionsService.strawElectronics.thresholdAnalogNoise : 0
 services.ProditionsService.strawElectronics.adcAnalogNoise : 0
+services.ProditionsService.strawElectronics.strawNoise : 5.0
+#services.ProditionsService.strawElectronics.thresholdAnalogNoise : 1.3
+#services.ProditionsService.strawElectronics.strawNoise : 2.0
+services.ProditionsService.strawElectronics.thresholdAnalogNoise : 2.0
 
 services.ProditionsService.strawElectronics.discriminatorThreshold : []
+
+services.ProditionsService.strawElectronics.triggerHysteresis : 5
+
+services.ProditionsService.strawPhysics.driftTimeVariance : [1.0,0.5]
+

@@ -4,6 +4,8 @@ import numpy as np
 
 ROOT.gSystem.Load("event/Dict.so")
 
+h = ROOT.TH1F("h","h",200,-100,100)
+
 def calc_rms(fn,straws,is_fermilab):
   #f = ROOT.TFile("~/mu2e/newruns/software/%s" % fn)
   f = ROOT.TFile("%s" % fn)
@@ -15,6 +17,7 @@ def calc_rms(fn,straws,is_fermilab):
       if t.channel in straws:
         if t.peak-t.pedestal > 30:
           pedestals[t.channel].append(t.samples[2]-t.samples[1])
+          h.Fill(t.samples[2]-t.samples[1])
   else:
     for i in range(t.GetEntries()):
       t.GetEntry(i)
@@ -22,12 +25,13 @@ def calc_rms(fn,straws,is_fermilab):
         for straw in straws:
           if t.events.straws[j].channel == straw:
             pedestals[straw].append(t.events.straws[j].samples[2]-t.events.straws[j].samples[1])
+            h.Fill(t.events.straws[j].samples[2]-t.events.straws[j].samples[1])
   return pedestals
 
 import sys
 
 if len(sys.argv) < 3:
-  print "Usage: python bin/pedestal_data.py <input filename> <straw number>"
+  print "Usage: python bin/pedestal_data.py <input filename> <straw number> [(is fermilab)]"
   sys.exit()
 
 is_fermilab = False
@@ -37,9 +41,14 @@ if len(sys.argv) > 3:
 fn = sys.argv[1]
 straw = int(sys.argv[2])
 ped = calc_rms(fn,[straw],is_fermilab)[straw]
-print "Number of pedestals:",len(ped)
+h.Fit("gaus","QS")
+f1 = h.GetFunction("gaus")
+print "Number of pedestals:",len(ped),np.std(ped)
 if is_fermilab:
-  print "Pedestal RMS in mV:",np.std(ped)/np.sqrt(2)/1024.*1500
+#  print "Pedestal RMS in mV:",np.std(ped)/np.sqrt(2)/1024.*1500
+  print "Pedestal sigma in mV: ",f1.GetParameter(2)/np.sqrt(2)/1024.*1500,f1.GetParError(2)/np.sqrt(2)/1024.*1500
 else:
-  print "Pedestal RMS in mV:",np.std(ped)/np.sqrt(2)/4096.*1500
+#  print "Pedestal RMS in mV:",np.std(ped)/np.sqrt(2)/4096.*1500
+  print "Pedestal sigma in mV: ",f1.GetParameter(2)/np.sqrt(2)/4096.*1500,f1.GetParError(2)/np.sqrt(2)/4096.*1500
 #print "(std of distribution:",np.std(ped)/4096.*1500,")"
+raw_input()

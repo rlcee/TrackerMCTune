@@ -1,0 +1,19 @@
+#include "fcl/prototype.fcl"
+#include "fcl/epilog_Fe55_lbl.fcl"
+
+physics.producers.generate.inputfile : "fcl/generate_prototypeFe55Center.txt"
+
+services.TFileService.fileName: "dig.Fe55_thresholdgain_5.root"
+outputs.Output.fileName: "dig.Fe55_thresholdgain_5.art"
+
+services.ProditionsService.strawDrift.wireVoltage : 1200
+services.ProditionsService.strawPhysics.gasGain : 0.8548e4
+
+services.ProditionsService.strawElectronics.discriminatorThreshold : []
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 5.0
+
+# No noise so we have no deadtime issues
+services.ProditionsService.strawElectronics.strawNoise : 0
+services.ProditionsService.strawElectronics.thresholdAnalogNoise : 0
+
+source.maxEvents: 500000
