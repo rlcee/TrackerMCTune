@@ -235,21 +235,21 @@ for straw in straws:
   for i in range(1,len(measured_thresh[straw])):
     t_straw[0] = straw
     t_measured_thresh[0] = measured_thresh[straw][i]
-    t_thresh[0] = thresh[straw][i-1]
-    t_width[0] = width[straw][i-1]
-    t_thresherr[0] = thresherr[straw][i-1]
-    t_widtherr[0] = widtherr[straw][i-1]
+    t_thresh[0] = thresh[straw][i-1]*1500/4096.
+    t_width[0] = width[straw][i-1]*1500/4096.
+    t_thresherr[0] = thresherr[straw][i-1]*1500/4096.
+    t_widtherr[0] = widtherr[straw][i-1]*1500/4096.
     tout.Fill()
 tout.Write()
 
-threshoffset = array.array('d',[params[0]])
-threshslope = array.array('d',[params[1]])
-widthoffset = array.array('d',[params2[0]])
-widthslope = array.array('d',[params2[1]])
-threshoffseterr = array.array('d',[errors[0]])
-threshslopeerr = array.array('d',[errors[1]])
-widthoffseterr = array.array('d',[errors2[0]])
-widthslopeerr = array.array('d',[errors2[1]])
+threshoffset = array.array('d',[params[0]*1500/4096.])
+threshslope = array.array('d',[params[1]*1500/4096.])
+widthoffset = array.array('d',[params2[0]*1500/4096.])
+widthslope = array.array('d',[params2[1]*1500/4096.])
+threshoffseterr = array.array('d',[errors[0]*1500/4096.])
+threshslopeerr = array.array('d',[errors[1]*1500/4096.])
+widthoffseterr = array.array('d',[errors2[0]*1500/4096.])
+widthslopeerr = array.array('d',[errors2[1]*1500/4096.])
 
 tout = ROOT.TTree("fe55thresholdfit","fe55thresholdfit")
 tout.Branch("threshoffset",threshoffset,"threshoffset/D")

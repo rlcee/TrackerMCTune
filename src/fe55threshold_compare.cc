@@ -131,7 +131,7 @@ int main(int argc, char** argv)
   mg->SetTitle("");
   mg->Draw("ALP");
   mg->GetXaxis()->SetTitle("Set threshold (mV)");
-  mg->GetYaxis()->SetTitle("Output signal threshold (peak minus pedestal counts)");
+  mg->GetYaxis()->SetTitle("Output signal threshold (ADC peak minus pedestal in mV)");
   //gthresh[1]->Draw("same LP");
   fthresh->SetLineColor(kRed);
   fthresh->Draw("same");
@@ -156,7 +156,7 @@ int main(int argc, char** argv)
   mg2->SetTitle("");
   mg2->Draw("ALP");
   mg2->GetXaxis()->SetTitle("Set threshold (mV)");
-  mg2->GetYaxis()->SetTitle("Signal cutoff width (ADC counts)");
+  mg2->GetYaxis()->SetTitle("Signal cutoff width (ADC peak minus pedestal in mV)");
   //gthresh[1]->Draw("same LP");
   fwidth->SetLineColor(kRed);
   fwidth->Draw("same");

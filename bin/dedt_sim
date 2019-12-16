@@ -21,6 +21,7 @@ min_straw = int(sys.argv[3])
 max_straw = int(sys.argv[4])
 
 last_ewm = 0
+last_mctime = 0
 last_event = []
 last_event_channels = []
 
@@ -33,7 +34,8 @@ h1 = ROOT.TH1F("h1","h1",100,0,1024)
 h2 = ROOT.TH2F("h2","h2",25,-50,50,100,0,1024)
 for i in range(t.GetEntries()):
   t.GetEntry(i)
-  if t.ewmoffset == last_ewm:
+  if np.abs(t.mctime - last_mctime) < 0.5:
+#  if t.ewmoffset == last_ewm:
     if t.panel == 1:
       last_event.append(i)
       last_event_channels.append(t.straw)
@@ -76,7 +78,8 @@ for i in range(t.GetEntries()):
 
     last_event_channels = [t.straw]
     last_event = [i]
-    last_ewm = t.ewmoffset
+    #last_ewm = t.ewmoffset
+    last_mctime = t.mctime
 
 
 fout = ROOT.TFile(sys.argv[2],"RECREATE")

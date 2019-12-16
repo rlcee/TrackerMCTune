@@ -6,10 +6,10 @@ physics.producers.generate.inputfile : "fcl/generate_120cmMuonsCenter.txt"
 services.TFileService.fileName: "dig.cosmic_dedt.root"
 outputs.Output.fileName: "dig.cosmic_dedt.art"
 
-services.ProditionsService.strawDrift.wireVoltage : 1475
-services.ProditionsService.strawPhysics.gasGain : 1.11e5
+services.ProditionsService.strawDrift.wireVoltage : 1500
+services.ProditionsService.strawPhysics.gasGain : 1.41e5
 
 services.ProditionsService.strawElectronics.discriminatorThreshold : []
-services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 12.0
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 10.0
 
-source.maxEvents: 2000
+source.maxEvents: 20000

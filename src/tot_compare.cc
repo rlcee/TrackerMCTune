@@ -88,7 +88,8 @@ int main(int argc, char** argv)
     h[ifile] = new TH2F(TString::Format("tot_%d",ifile),"tot",32,0,64,120,-20,100);
 
     for (int j=0;j<tots[ifile].size();j++){
-      h[ifile]->Fill(tots[ifile][j],times[ifile][j]);
+      if (docas[ifile][j] < 2.5)
+        h[ifile]->Fill(tots[ifile][j],times[ifile][j]);
     }
   }
 

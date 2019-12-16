@@ -10,6 +10,6 @@ services.ProditionsService.strawDrift.wireVoltage : 1200
 services.ProditionsService.strawPhysics.gasGain : 0.8548e4
 
 services.ProditionsService.strawElectronics.discriminatorThreshold : []
-services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 5
+services.ProditionsService.strawElectronics.defaultDiscriminatorThreshold : 10
 
 source.maxEvents: 50000

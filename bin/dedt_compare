@@ -20,8 +20,8 @@ ts = fs.Get("dedt")
 hd = ROOT.TH2F("hd","hd",100,-100,100,100,0,1000)
 hs = ROOT.TH2F("hs","hs",100,-100,100,100,0,1000)
 
-td.Project("hd","pmp*1500/1024.:dt")
-ts.Project("hs","pmp*1500/1024.:dt")
+td.Project("hd","pmp*2000/1024.:dt")
+ts.Project("hs","pmp*2000/1024.:dt")
 
 hdp = hd.ProfileX("hdp")
 hsp = hs.ProfileX("hsp")

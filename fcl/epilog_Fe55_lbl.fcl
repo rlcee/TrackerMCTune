@@ -3,4 +3,4 @@
 services.ProditionsService.strawElectronics.ADCPoles : [ 160., 6., 3.33 ]
 services.ProditionsService.strawElectronics.preampToAdc2Poles : [ 3.33 ]
 services.ProditionsService.strawElectronics.defaultAdcdVdI : 1.81e6
-services.ProditionsService.strawElectronics.adcAnalogNoise : 4.6
+services.ProditionsService.strawElectronics.adcAnalogNoise : 2.536

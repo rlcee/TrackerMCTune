@@ -94,7 +94,7 @@ int main(int argc, char** argv)
     
     float maxval = 1000;
     if (fermilab)
-      maxval = 100*1.46484;
+      maxval = 100; //*1.46484;
     
 
     h[ifile]= new TH1F(TString::Format("h_%d",ifile),"h",100,0,maxval);
@@ -102,7 +102,8 @@ int main(int argc, char** argv)
     for (int i=0;i<pmp[ifile].size();i++){
       h[ifile]->Fill(pmp[ifile][i]);
     }
-    h[ifile]->Scale(1.0/h[ifile]->Integral());
+    int minbin = h[ifile]->FindBin(t_mean1[ifile]-t_width1[ifile]);
+    h[ifile]->Scale(1.0/h[ifile]->Integral(minbin,999));
     h[ifile]->SetDirectory(0);
   }
 
