@@ -1,0 +1,12 @@
+#
+# generate Fe55 source in front of plane 0
+#
+#include "TrackerMCTune/fcl/VstSim.fcl"
+
+
+physics.producers.generate.inputfile : "TrackerMCTune/fcl/FeSim.txt"
+
+# Fe runs have lower gain settings:
+# 1250 V gain should be set to 13630
+services.ProditionsService.strawPhysics.gasGain : 13630.0
+

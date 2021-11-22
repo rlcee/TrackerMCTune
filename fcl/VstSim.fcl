@@ -1,0 +1,106 @@
+#
+# general fcl for generating Fe55 or muons in front of plane 0
+# to simulation the horizontal tracker VST.  Path include generate, sim,
+# making digis and strawhit reco
+#
+
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/fcl/standardServices.fcl"
+
+process_name : vstSim
+
+# Start from an empty source
+source : {
+  module_type : EmptyEvent
+}
+
+services : {
+  @table::Services.SimAndReco
+  TFileService          : { fileName : "/dev/null" }
+}
+
+physics : {
+
+  producers:  {
+
+      generate: {
+	 module_type          : EventGenerator
+	 inputfile            : @nil
+      }
+      
+      g4run :  @local::g4run
+      
+      @table::TrackerMC.StepProducers
+      EWMProducer : { module_type : EventWindowMarkerProducer }
+      @table::TrackerMC.DigiProducers
+      @table::TrkHitReco.producers
+   }
+
+   filters : {
+      g4consistent: {
+         module_type: FilterStatusG4
+         input: "g4run"
+         maxAcceptedStatus: 0
+      }
+      trkStepFilter : {
+	 module_type : "TrackerStepPointFilter"
+	 minStepPoints : 1
+      }
+      
+   } // filters
+   
+   analyzers: {
+   }
+
+  p1 : [generate , g4run , g4consistent, trkStepFilter , @sequence::TrackerMC.StepSim, EWMProducer, @sequence::TrackerMC.DigiSim, @sequence::TrkHitReco.PrepareHits ]
+
+  e1 : [outfile]
+
+  trigger_paths  : [p1]
+  end_paths      : [e1]
+
+}
+
+outputs:  {
+
+  outfile : {
+    module_type   :   RootOutput
+      SelectEvents : [ "p1" ]
+    fileName      :   "FeSim.art"
+  }
+
+}
+
+
+// only simulate the tracker hits
+physics.producers.g4run.SDConfig.enableSD: [ "tracker" ]
+
+// stop the sim if a particle goes outside plane 0
+physics.producers.g4run.Mu2eG4CommonCut: {
+   type: union
+   pars: 
+   [
+      // Upstream plane
+      { type: plane normal: [  0, 0, -1 ] point : [ 0, 0, 8600 ] },
+      // Downstream plane
+      { type: plane normal: [  0, 0, 1 ] point : [ 0, 0, 8695 ] },
+      // +x plane
+      { type: plane normal: [  1, 0, 0 ] point : [ -3104, 0, 0 ] },
+      // -x plane
+      { type: plane normal: [  -1, 0, 0 ] point : [ -4704, 0, 0 ] },
+      // +y plane
+      { type: plane normal: [  0, 1, 0 ] point : [ 0, 800, 0 ] },
+      // -y plane
+      { type: plane normal: [  0, -1, 0 ] point : [ 0, -800, 0 ] }
+   ]
+}
+
+physics.producers.EWMProducer.SpillType : 1
+
+services.SeedService.baseSeed         :   8
+services.SeedService.maxUniqueEngines :  20
+
+services.scheduler.wantSummary: true
+services.TimeTracker.printSummary: true
+
