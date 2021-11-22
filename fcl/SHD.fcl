@@ -1,0 +1,43 @@
+#
+# make strawhitdiag ntuple for MC
+#
+
+#include "Offline/fcl/minimalMessageService.fcl"
+#include "Offline/fcl/standardProducers.fcl"
+#include "Offline/fcl/standardServices.fcl"
+#include "Offline/TrkDiag/fcl/prolog.fcl"
+
+process_name : SHD
+
+source : { module_type : RootInput }
+
+#services : @local::Services.SimAndReco
+services : @local::Services.Reco
+
+
+physics :
+{
+
+  analyzers : {
+      SHD : {
+	 module_type : StrawHitDiag
+	 StrawDigiMCCollection : "makeSD"
+	 ComboHitFlag : false
+	 StrawHitFlagCollection : "FlagBkgHits:StrawHits"
+	 MonteCarloDiag : true
+	 DigiDiag : true
+	 TimeOffsets : {
+	    inputs : [ @sequence::DigiCompression.TimeMaps ]
+	 }
+      }
+  }
+  EndPath : [ SHD ]
+  end_paths : [ EndPath ]
+}
+
+
+
+services.scheduler.wantSummary : true
+services.TimeTracker.printSummary: true
+
+

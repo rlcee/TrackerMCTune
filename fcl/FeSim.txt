@@ -1,0 +1,39 @@
+// a rough simulation of a FE55 source upstream of plane 0
+
+// enable process
+bool particleGun.do = true;
+
+// Limits on cos(polar angle):
+double particleGun.czmin =  0.86;
+double particleGun.czmax =  1.0;
+
+// Limits on phi angle:
+// no settings defaults to all phi
+//double particleGun.phimin = 4.974199;
+//double particleGun.phimax = 4.974201;
+
+// Time limits in ns, relative to protons on target.
+double particleGun.tmin  =  1000.0;
+double particleGun.tmax  =  1000.0;
+
+// position
+// most upstream wire is -1518.3 in trk coords, 8652.7 in mu2e coords
+vector<double> particleGun.point = {-3904.0, 605.0, 8635.0};
+
+// the extent of the source, small=point source
+vector<double> particleGun.halfLength = { 0.1, 0.1, 0.1 };
+
+// Limits on momentum (MeV/c):
+double particleGun.pmin = 0.0059;
+double particleGun.pmax = 0.0059;
+
+// Particle Id (22 for Xrays!)
+int particleGun.id = 22;
+
+// Mean particle.
+double particleGun.mean =  -1;
+
+// Control of histograms.
+bool particleGun.doHistograms = false;
+
+bool particleGun.verbose = false;
