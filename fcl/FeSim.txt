@@ -4,7 +4,7 @@
 bool particleGun.do = true;
 
 // Limits on cos(polar angle):
-double particleGun.czmin =  0.86;
+double particleGun.czmin =  0.68;
 double particleGun.czmax =  1.0;
 
 // Limits on phi angle:
@@ -18,7 +18,7 @@ double particleGun.tmax  =  1000.0;
 
 // position
 // most upstream wire is -1518.3 in trk coords, 8652.7 in mu2e coords
-vector<double> particleGun.point = {-3904.0, 605.0, 8635.0};
+vector<double> particleGun.point = {-3904.0, 605.0, 8628.0};
 
 // the extent of the source, small=point source
 vector<double> particleGun.halfLength = { 0.1, 0.1, 0.1 };
