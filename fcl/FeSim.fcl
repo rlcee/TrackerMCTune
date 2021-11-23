@@ -10,3 +10,7 @@ physics.producers.generate.inputfile : "TrackerMCTune/fcl/FeSim.txt"
 # 1250 V gain should be set to 13630
 services.ProditionsService.strawPhysics.gasGain : 13630.0
 
+# make readout match VST
+services.ProditionsService.strawElectronics.nADCPresamples : 11
+services.ProditionsService.strawElectronics.nADCPackets : 2
+services.ProditionsService.strawElectronics.defaultAdcdVdI : 0.764e6
