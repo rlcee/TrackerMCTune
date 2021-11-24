@@ -14,3 +14,5 @@ services.ProditionsService.strawPhysics.gasGain : 13630.0
 services.ProditionsService.strawElectronics.nADCPresamples : 11
 services.ProditionsService.strawElectronics.nADCPackets : 2
 services.ProditionsService.strawElectronics.defaultAdcdVdI : 0.764e6
+
+outputs.outfile.fileName: "FeSim.art"
