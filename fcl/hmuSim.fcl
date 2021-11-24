@@ -1,0 +1,13 @@
+#
+# generate horizontal muons in front of plane 0
+#
+#include "TrackerMCTune/fcl/VstSim.fcl"
+
+physics.producers.generate.inputfile : "TrackerMCTune/fcl/hmuSim.txt"
+
+# make readout match VST
+services.ProditionsService.strawElectronics.nADCPresamples : 11
+services.ProditionsService.strawElectronics.nADCPackets : 2
+services.ProditionsService.strawElectronics.defaultAdcdVdI : 0.764e6
+
+

@@ -1,0 +1,37 @@
+// a rough simulation of tracker VST horizontal plane cosmics
+
+// enable process
+bool particleGun.do = true;
+
+// Limits on cos(polar angle):
+double particleGun.czmin =  0.8;
+double particleGun.czmax =  1.0;
+
+// Limits on phi angle:
+// defaults to all phi
+//double particleGun.phimin = 4.974199;
+//double particleGun.phimax = 4.974201;
+
+// Time limits in ns, relative to protons on target.
+double particleGun.tmin  =  1000.0;
+double particleGun.tmax  =  1000.0;
+
+// position - just upstream of plane 0
+vector<double> particleGun.point = {-3904.0, 0.0, 8635.0};
+// cover the whole plane
+vector<double> particleGun.halfLength = { 700.0, 700.0, 0.1 };
+
+// Limits on momentum (MeV/c):
+double particleGun.pmin = 100;
+double particleGun.pmax = 1000;
+
+// Particle Id - muons
+int particleGun.id = 13;
+
+// Mean particle.
+double particleGun.mean =  -1;
+
+// Control of histograms.
+bool particleGun.doHistograms = false;
+
+bool particleGun.verbose = false;

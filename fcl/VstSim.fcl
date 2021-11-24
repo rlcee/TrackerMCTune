@@ -67,7 +67,7 @@ outputs:  {
   outfile : {
     module_type   :   RootOutput
       SelectEvents : [ "p1" ]
-    fileName      :   "FeSim.art"
+      fileName      :   "VstSim.art"
   }
 
 }
